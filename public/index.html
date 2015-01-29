@@ -1,0 +1,379 @@
+<!doctype html>
+<html ng-app="MyApp">
+<style>
+#header {height:30px}
+#main       {border:1px solid gray}
+#LOGINID {width:200px}
+#PW {width:200px}
+.dispon {display:inline}
+.dispoff{display:none}
+.TBL_MIDUM{width:150px}
+.TBL_ADMIN_FLG{width:100px}
+</style>
+  <head>
+  </head>
+  <body onload="init()" ng-controller="MyController">
+    <section id="header" class="container"></section>
+<!--    <div id="login" class="check-element animate-show" ng-show="login" ng-hide="logon"> -->
+      
+      <section id="login" class="container check-element animate-show" ng-show="login" ng-hide="logon">
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><font color="red">{{MSG}}</font></div>
+            <div  class="col-sm-1"></div>
+          </div>
+        <div class="row">
+          <div  class="col-sm-1"></div>
+          <div  class="col-sm-3">
+            <label>社員ＩＤ:</label>
+          </div>
+          <div  class="col-sm-4">
+              <input type="text" id="LOGINID" ng-model="yourId" placeholder="社員ＩＤを入力してください" value="">
+          </div>
+          <div  class="col-sm-4"></div>
+        </div>
+        <div class="row">
+          <div  class="col-sm-1"></div>
+          <div  class="col-sm-3">
+            <label>パスワード:</label>
+          </div>
+          <div  class="col-sm-4">
+            <input type="password" id="PW" ng-model="yourPW" placeholder="パスワードを入力してください"" value="">
+          </div>
+          <div  class="col-sm-4"></div>
+        </div>
+        <div class="row">
+          <div  class="col-sm-4"></div>
+          <div  class="col-sm-4">
+<!--
+            <button class="btn btn-primary btn-lg" ng-model="logon" ng-click="doLogon()">LOGIN</button>
+-->
+            <button class="btn btn-primary btn-lg" ng-model="logon" ng-click="logonChk(yourId,yourPW)">LOGIN</button>
+          </div>
+          <div  class="col-sm-4"></div>
+        </div>
+      </section>
+    </div>
+    <div id="menu" class="dispoff">
+      <section class="container" ng-init="actTab='Touroku'">
+        <div class="row">
+          <div  class="col-sm-1"></div>
+
+          <div  class="col-sm-10">
+            <ul class="nav nav-tabs" >
+              <li ng-class="{ active: actTab=='Touroku' }" ng-click="actTab='Touroku'"><a href="#">社員情報登録</a></li>
+              <li ng-class="{ active: actTab=='Kanri' }"   ng-click="actTab='Kanri'"  ><a href="#">勤怠管理</a></li>
+              <li ng-class="{ active: actTab=='Kintai' }"  ng-click="actTab='Kintai'" ><a href="#">その他    </a></li>
+              <button class="btn btn-info pull-right" ng-model="logout" ng-click="logout()">LOGOUT</button>
+            </ul>
+
+          <div  class="col-sm-1">
+          </div>
+        </div>
+        <section ng-class="{ dispoff: actTab!='Touroku' }" id="Touroku" >
+          <div class="row">
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><font color="red">{{MSG}}</font><BR></div>
+            <div  class="col-sm-1"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><span style="text-decoration:underline">User Name:　{{myName}}</span></div>
+            <div  class="col-sm-1"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><HR></div>
+            <div  class="col-sm-1"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-2"></div>
+            <div  class="col-sm-4"><input type="text" id="ADD_ID"   ng-model="addId"   placeholder="追加する社員ID"></div>
+            <div  class="col-sm-4"><input type="text" id="ADD_NAME" ng-model="addName" placeholder="追加する社員名"></div>
+            <div  class="col-sm-2"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-2"></div>
+            <div  class="col-sm-4"><input type="text" id="ADD_PW"   ng-model="addPW"   placeholder="追加する社員パスワード"></div>
+            <div  class="col-sm-4"><input type="text" id="ADD_REPW" ng-model="addRePW" placeholder="追加する社員パスワード（再入力）"></div>
+            <div  class="col-sm-2"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><button class="btn btn-primary" ng-model="addMemBtn" ng-click="addMem(addId,addName,addPW,addRePW)">追加</button><hr></div>
+            <div  class="col-sm-1"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10"><input type="text" id="SERCH_ID" ng-model="searchWord" placeholder="検索ワード">　<button class="btn btn-primary btn-sm" ng-model="showMemBtn" ng-click="showMem()">refresh</button></div>
+            <div  class="col-sm-1"></div>
+          </div>
+          <div class="row">
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                  <thred>
+                    <tr>
+                      <th class="TBL_MIDUM">社員番号</th><th>社員名</th><th class="TBL_ADMIN_FLG">管理者フラグ</th>
+                    </tr>
+                  </thred>
+                  <tbody>
+                    <tr ng-repeat="member in memList | filter:searchWord" ng-click="selectMem(member.userid,'','',member.username)">
+                      <td>{{member.userid}}</td>
+                      <td>{{member.username}}</td>
+                      <td>{{member.adminflg}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div  class="col-sm-1"></div>
+          </div>
+        </section>
+        <section ng-class="{ dispoff: actTab!='Kanri' }" id="Kanri" >
+          <div class="row" >
+            <div  class="col-sm-1"></div>
+            <div  class="col-sm-10">
+              <div>勤怠情報</div>
+              <div><font color="red">{{MSG}}</font></div>
+              <div>
+                　[{{kintaiName}} ]
+                　　　　　　{{kintaiYear}}-{{kintaiMonth}}　
+                    <button class="btn btn-success btn-sm" ng-click="selectMem(kintaiId,kintaiYear-1, kintaiMonth,  kintaiName)">≪</button>
+                    <button class="btn btn-success btn-sm" ng-click="selectMem(kintaiId,kintaiYear,   kintaiMonth-1,kintaiName)">＜</button>
+                    <button class="btn btn-success btn-sm" ng-click="selectMem(kintaiId,kintaiYear,   kintaiMonth+1,kintaiName)">＞</button>
+                    <button class="btn btn-success btn-sm" ng-click="selectMem(kintaiId,kintaiYear+1, kintaiMonth,  kintaiName)">≫</button>
+                　　<button class="btn btn-primary btn-sm" ng-click="selectMem(kintaiId,kintaiYear,   kintaiMonth,  kintaiName)">refresh</button>
+              </div>
+              <hr>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                  <thred>
+                    <tr>
+                      <th class="TBL_MIDUM">日付</th><th class="TBL_MIDUM">始業</th><th class="TBL_MIDUM">終業</th>
+                    </tr>
+                  </thred>
+                  <tbody>
+                    <tr ng-repeat="kintai in kintaiList">
+                      <td  class="TBL_MIDUM">{{kintai.workday}}</td><td  class="TBL_MIDUM">{{kintai.starttime}}</td><td  class="TBL_MIDUM">{{kintai.endtime}}</td></tr>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div  class="col-sm-1"></div>
+          </div>
+          </div>
+        </section>
+      </section>
+    </div>
+    <!--
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    
+    -->
+    <script src="./js/angular.min.js"></script>
+    <script src="./js/angular-resource.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <!--
+    <link rel="stylesheet" type="text/css" href="./css/animation.css">
+    -->
+    
+    <!-- <script src="http://code.angularjs.org/1.2.3/angular-animate.min.js"></script> -->
+<!--
+    <script src="./js/index.js"></script>
+-->
+    <!-- Latest compiled and minified CSS -->
+
+<script>
+//***************************************************************************************************
+var baseURL="./data/"; //★本番環境では本番用URLに変更する
+// var baseURL="https://localhost:3003/admin/api/1.0/"; 
+var httpMethod = "POST";    // 更新処理用メソッド。
+//***************************************************************************************************
+
+function makeFuncInfo(func,args){
+  return {func:func,args:args};
+}
+
+angular.module("MyApp", ["ngResource"]);
+
+function MyController($scope, $resource) {
+  // API の URL を指定してモデルを作成
+  console.log("MyController START");
+  
+  $scope.logonChk = function(str1,str2) {
+    $scope.MSG = "";
+    //クライアント側は管理ユーザーIDとパスワード「:」で繋ぎBase64エンコードしたものをAuthorizationヘッダに付加してリクエストを送信する。
+    //サーバー側は認証を行いレスポンスとしてCookieにセッションIDを設定して返す。
+    // POST
+    var url = baseURL + "login";
+    var Contents = $resource(url,{},{login:{method:httpMethod , headers:{'Authorization':'Basic ' + btoa( str1 + ':' + str2)}}});
+    console.log("Contents Create end");
+    content = Contents.login({"memId" : btoa(str1) ,"memPw" : btoa(str2)} ,function (u, getResponseHeaders){
+      console.log("JSON START");
+      $scope.myName=content.body.username;
+      login.style.display="none";
+      menu.style.display ="none";
+      menu.style.display="inline";
+      
+      //loadMemberListの後にKitaiSetを呼び出す為、リストに設定。
+      //同時呼び出しすると$resourceが上書きされるので…
+      var funcInfo = makeFuncInfo(kintaiSet, [str1,"","",content.body.username,$scope,$resource]);
+      var funcInfos = [funcInfo];
+      
+      loadMemberList($scope, $resource,funcInfos);
+      
+      console.log("JSON END");
+    },function (httpResponse){errorCallbackFunction(httpResponse,$scope);});
+  };
+  //ログアウトAPI
+  //管理機能からログアウトする。
+  //この時、セッションIDはCookieとしてリクエストヘッダに含んで送信する。
+  $scope.logout = function(){
+    $scope.MSG = "";
+    console.log("Logout START");
+    var url = baseURL + "logout";
+    var Contents = $resource(url,{},{logout:{method:'GET',headers:{} }});
+    content = Contents.logout({} ,function (u, getResponseHeaders){
+        console.log("---logout---");
+      },function (httpResponse){errorCallbackFunction(httpResponse,$scope);});
+    $scope.actTab='Touroku';
+    init();
+  };
+  
+  $scope.selectMem = function(memId,year,month,memName){
+    $scope.MSG = "";
+    kintaiSet(memId,year,month,memName,$scope,$resource);
+    $scope.actTab='Kanri';
+    console.log($scope.actTab);
+  };
+  $scope.addMem = function(addId,addName,addPW,addRePW){
+    $scope.MSG = "";
+    //ユーザー登録API
+    //一般ユーザーを登録する。
+    //この時、セッションIDはCookieとしてリクエストヘッダに含んで送信する。
+    var url = baseURL + "user";
+    var Contents = $resource(url,{},{user:{method:httpMethod,headers:{} }});
+        
+    content = Contents.user({"userid" : addId ,"username" : addName, "password" : addPW, "repassword": addRePW} ,function (u, getResponseHeaders){
+      console.log("JSON START");
+        loadMemberList($scope, $resource);
+      console.log("JSON END");
+    },function (httpResponse){errorCallbackFunction(httpResponse,$scope);});
+  };
+  $scope.showMem = function(){
+    loadMemberList($scope, $resource);
+  };
+
+};
+function init(){
+  login.style.display="none";
+  menu.style.display ="none";
+  login.style.display="inline";
+}
+
+function loadMemberList($scope, $resource,funcInfos){
+  $scope.MSG = "";
+  //ユーザー検索API
+  //ユーザー情報を検索する。
+  //この時、セッションIDはCookieとしてリクエストヘッダに含んで送信する。
+  //Request URL https://[hostname]/admin/api/1.0/search?limit=<取得上限>&offset=<開始位置>
+  //GET
+  var url = baseURL + "user/search";
+  //var Contents = $resource(url,{},{search:{method:'GET' , headers:{'Set-Cookie':sessionId}}}); //sessionの明示的セット用
+  var Contents = $resource(url,{},{search:{method:'GET',headers:{} }});
+  
+  content = Contents.search({"limit" : "100" ,"offset" : "0"} ,function (u, getResponseHeaders){
+  //content = contents.get(function (){
+    console.log("loadMemberList START");
+    $scope.memList = content.body.result;
+    console.log("loadMemberList END");
+    
+    continueFunc(funcInfos);
+
+  },function (httpResponse){errorCallbackFunction(httpResponse,$scope);});
+}
+
+function loadMemberKintai($scope,content,name){
+  console.log("loadMemberKintai START");
+  $scope.kintaiName  = name;
+  $scope.kintaiYear  = content.body.year;
+  $scope.kintaiMonth = content.body.month;
+  $scope.kintaiList  = content.body.list;
+  
+  console.log("loadMemberKintai END");
+}
+function kintaiSet(memId,year,month,memName,$scope,$resource,funcInfos){
+
+    console.log("kintaiSet: "+memId+","+year+","+month+","+memName);
+
+
+    //勤怠取得API
+    //ユーザーと年月を入力して勤怠情報を取得する
+    //この時、セッションIDはCookieとしてリクエストヘッダに含んで送信する。
+    //Request URL https://[hostname]/admin/api/1.0/attendance/[userid]/[yyyy]/[MM]
+    //GET
+    var url = baseURL + "attendance";
+    if(year ==""){
+      console.log("defaultYear");
+      year=new Date().getYear()+1900;
+      console.log("defaultMonth");
+      month=new Date().getMonth()+1;
+    }else{
+      var d = new Date();
+      d.setYear(year);
+      d.setMonth(month-1);
+      year = d.getYear()+1900;
+      month = d.getMonth()+1;
+    }
+    
+    if(month<10){
+      month = "0"+month;
+    }
+    
+    $scope.kintaiId    = memId;
+    $scope.kintaiName  = memName;
+    $scope.kintaiYear  = year;
+    $scope.kintaiMonth = month;
+    $scope.kintaiList  = null;
+
+    console.log("attendance: "+year+"/"+month);
+    url+="/"+memId+"/"+year+"/"+month;
+    var Contents = $resource(url,{},{attendance:{method:'GET',headers:{} }});
+    content = Contents.attendance({} ,function (u, getResponseHeaders){
+      console.log("selectMem START");
+      loadMemberKintai($scope,content,memName);
+      console.log("selectMem END");
+
+      continueFunc(funcInfos);
+
+    },function (httpResponse){errorCallbackFunction(httpResponse,$scope);});
+
+}
+
+function continueFunc(funcInfos){
+  if(funcInfos!=null && funcInfos.length > 0){
+    var funcInfo = funcInfos.shift();
+    funcInfo.args.push(funcInfos);
+    console.log("continueFunc:"+funcInfo.func.name);
+    console.log("continueFunc:"+funcInfo.args[0]);
+    console.log("continueFunc:"+funcInfo.args[1]);
+    funcInfo.func.apply(this, funcInfo.args);
+  }
+}
+
+
+function errorCallbackFunction(httpResponse,$scope){
+  console.log("HTTP STATUS:" + httpResponse.status);
+  $scope.MSG = "エラーが発生しました (status:"+httpResponse.status+")";
+  
+}
+</script>
+
+  </body>
+
+</html>
