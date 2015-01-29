@@ -1,14 +1,15 @@
 <html>
 <body>
   node app.js
-  <form method=post action="http://localhost:3000/auth/access_token">
+  <form method=post action="http://localhost:3000/auth/access_token" target="ifm">
   <input type=submit value=auth>
   </form>
-  <form method=post action="http://localhost:3000/attendance_time">
+  <form method=post action="http://localhost:3000/attendance_time" target="ifm">
   <input type=submit value=attendance_time>
   </form>
-  <form method=post action="http://localhost:3000/quitting_time">
+  <form method=post action="http://localhost:3000/quitting_time" target="ifm">
   <input type=submit value=auth>
   </form>
+  <iframe name="ifm" id="ifm">
 </body>
 </html>
