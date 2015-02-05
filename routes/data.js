@@ -4,7 +4,9 @@
  */
 
 exports.login= function(req, res){
-  var data = {
+  var authorization = req.headers.authorization;;
+  console.log("auth.Authorization:" + authorization);
+    var data = {
     "header": {
         "errorcode": "",
         "message": ""

@@ -8,7 +8,7 @@
  var http   = require('http');
 exports.auth= function(req, res){
   setHeader(res);
-  var authorization = http.Authorization;
+  var authorization = req.headers.authorization;;
   console.log("auth.Authorization:" + authorization);
   flg = true;//★成功true、異常false
   
@@ -38,7 +38,7 @@ exports.auth= function(req, res){
 
 exports.attendance_time= function(req, res){
   setHeader(res);
-  var authorization = http.Authorization;
+  var authorization = req.headers.authorization;;
 
   console.log("attendance_time.Authorization:" + authorization);
 
@@ -55,7 +55,7 @@ exports.attendance_time= function(req, res){
 exports.quitting_time= function(req, res){
 
   setHeader(res);
-  var authorization = http.Authorization;
+  var authorization = req.headers.authorization;
   console.log("quitting_time.Authorization:" + authorization);
 
   var data = {
