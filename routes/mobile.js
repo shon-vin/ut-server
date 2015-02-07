@@ -5,11 +5,24 @@
  *  attendance_time
  *  quitting_time
  */
- var http   = require('http');
+ var Async   = require('./async');
 exports.auth= function(req, res){
   setHeader(res);
-  var authorization = req.headers.authorization;;
+  var authorization = req.headers.authorization;
   console.log("auth.Authorization:" + authorization);
+  console.log(req.headers);
+  authorization="Basic :dXNlcjAxOnBhc3N3b3Jk";
+  var headers = authorization.split(' ');
+  var buf = new Buffer(headers[1], 'base64');
+  console.log(">Authorization----------------------------------");
+  console.log(" AtoB:"+buf.toString());
+  var array = buf.toString().split(':');
+
+  console.log(" userid:" +array[0]);
+  console.log(" passwd:" +array[1]);
+  console.log(">Authorization----------------------------------");
+  
+  
   flg = true;//★成功true、異常false
   
   if(flg){
@@ -33,14 +46,32 @@ exports.auth= function(req, res){
       "body": null
     };
   }
-  res.send(data);
+  Async.waterfall ([
+    function(callback){
+      console.log(" auth>> async 1");
+      callback(null);
+    },
+    function(callback){
+      console.log(" auth>> async 2");
+      callback(null);
+    },
+    function(callback){
+      console.log(" auth>> async 3");
+      //callback(null);
+      return res.send(data);
+    }
+  ],function(err){
+    console.log(" auth>> async end");
+    
+  });
+
 };
 
 exports.attendance_time= function(req, res){
   setHeader(res);
   var authorization = req.headers.authorization;;
-
   console.log("attendance_time.Authorization:" + authorization);
+  console.log(req.headers);
 
   var data = {
     "header": {
@@ -49,13 +80,31 @@ exports.attendance_time= function(req, res){
     },
     "body": null
   };
-  res.send(data);
+  Async.waterfall ([
+    function(callback){
+      console.log(" attendance_time>> async 1");
+      callback(null);
+    },
+    function(callback){
+      console.log(" attendance_time>> async 2");
+      callback(null);
+    },
+    function(callback){
+      console.log(" attendance_time>> async 3");
+      //callback(null);
+      return res.send(data);
+    }
+  ],function(err){
+    console.log(" attendance_time>> async end");
+    
+  });
 };
 
 exports.quitting_time= function(req, res){
 
   setHeader(res);
   var authorization = req.headers.authorization;
+  console.log(req.headers);
   console.log("quitting_time.Authorization:" + authorization);
 
   var data = {
@@ -65,7 +114,24 @@ exports.quitting_time= function(req, res){
     },
     "body": null
   };
-  res.send(data);
+  Async.waterfall ([
+    function(callback){
+      console.log(" quitting_time>> async 1");
+      callback(null);
+    },
+    function(callback){
+      console.log(" quitting_time>> async 2");
+      callback(null);
+    },
+    function(callback){
+      console.log(" quitting_time>> async 3");
+      //callback(null);
+      return res.send(data);
+    }
+  ],function(err){
+    console.log(" quitting_time>> async end");
+    
+  });
 };
 
 function setHeader(res){
